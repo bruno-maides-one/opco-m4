@@ -1,3 +1,3 @@
-from .utils import init_model, do_predict
+from .utils import opco_4_utils
 
-__all__ = ['init_model', 'do_predict']
+__all__ = ['opco_4_utils']
