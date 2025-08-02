@@ -1,41 +1,76 @@
 import torch
-from torch import device
-from transformers import AutoTokenizer, AutoModelForCausalLM
-from typing import Optional
+import os
+
+from transformers import (
+    AutoTokenizer,
+    AutoModelForCausalLM,
+    TrainingArguments,
+    DataCollatorForLanguageModeling,
+    Trainer,
+)
 from loguru import logger
+from datasets import Dataset
 
 class opco_4_utils:
-    def __init__(self, model_name: str, device: [Optional[str]] = None):
+    """
+    Classe destiné a manipuler un model de type CLM (Type GPT)
+
+    Features :
+
+    * Training
+    * Prediction
+    """
+
+    def __init__(self, model_name: str, device: str = None):
         """
-        Constructeur qui initialise le model et le tokenizer a partir du nom de model fourni
-        :param model_name:
-        :param device:
+        Constructeur qui initialise le model et le tokenizer a partir du nom de model fourni.
+
+        :param model_name: Nom du model
+        :type model_name: str
+        :param device: Device à utiliser pour les predictions et le training. Si non spécifié la classe va essayer de
+                       déterminer automatiquement le device les plus adapté
+        :type device: str
+
+        :rtype: opco_4_utils
         """
+        # Init des properties
         self.initialized = False
+        self.__column_name = "sample"
+        self.__test_size = 0.2
+        self.__max_length = 2048
+        self.__dataset = None
+        self.__tokenized_dataset = None
+        self.__tokenized_dataset_train = None
+        self.__tokenized_dataset_test = None
+        self.__tokenized_dataset_train = None
+
+        self.__model_name = model_name
 
         try:
             logger.info(f"Initialisation de la classe opco_4_utils")
-            self._tokenizer = AutoTokenizer.from_pretrained(model_name)
+            self.__tokenizer = AutoTokenizer.from_pretrained(model_name)
             logger.info(f"Tokenizer {model_name} chargé")
-            self._model = AutoModelForCausalLM.from_pretrained(model_name)
+            self.__model = AutoModelForCausalLM.from_pretrained(model_name)
             logger.info(f"Model {model_name} chargé")
         except Exception as e:
             logger.error(f"opco_4_utils Exception : {e}")
             raise e
 
         # Definition du device
-        if device is not None:
+        if device is None:
             self.detect_device()
-            logger.info(f"Determination automatique du device : {self._device}")
+            logger.info(f"Determination automatique du device : {self.__device}")
         else:
-            self._device = device
-            logger.info(f"Device utilisé : {self._device}")
+            self.__device = device
+            logger.info(f"Device forcé : {self.__device}")
 
         # Paramétrage du tokenizer et du model
-        self._tokenizer.pad_token = self._tokenizer.eos_token
-        self._model.config.pad_token_id = self._tokenizer.pad_token_id
+        self.__tokenizer.pad_token = self.__tokenizer.eos_token
+        self.__model.config.pad_token_id = self.__tokenizer.pad_token_id
 
-        # Déplacment des eléments sur le bon device
+        # Déplacement des eléments sur le bon device
+        self.__model.to(self.__device)
+        logger.info(f"Model déployer sur le device : {self.__device}")
 
         # On a fini l'initialisation
         self.initialized = True
