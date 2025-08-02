@@ -144,9 +144,15 @@ class opco_4_utils:
     # Methodes utiles
     #
 
-    def detect_device(self):
-        self._device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        return self._device
+    def detect_device(self) -> str:
+        """
+        Detect le device et le définie comme device utilisé dans l'instance.
+        :return: La chaine décrivant le device detecté
+        :rtype: str
+        """
+        self.__device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        return self.__device
+
 
 
     def __old_init_model(model_name, device=None, pad_token=None):
