@@ -263,25 +263,36 @@ class opco_4_utils:
         self.__trainer.save_model(f"export_model/{str}")
         logger.info(f"Finetuned modele sauvé dans {model_name}")
 
-        initialized = True
-
-        return tokenizer, model
-
-    def do_predict(self, model,
+    #
+    # Prediction
+    #
+    def do_predict(self,
                    prompt: str,
                    max_length: int = 200,
                    temperature: float = 0.7,
                    top_k: int = 40,
                    top_p: float = 0.9) -> str:
+        """
+        Fait la prediction sur le prompt saisie.
 
-        logger.trace(f"Prompte : {prompt}")
-        input_ids = tokenizer(prompt, return_tensors="pt").input_ids
+        :param prompt:
+        :param max_length:
+        :param temperature:
+        :param top_k:
+        :param top_p:
+        :return:
+        """
+        logger.trace(f"Prompt : {prompt}")
+        # input_ids = self.tokenize_function(prompt).input_ids
+        # self.__tokenizer(prompt, return_tensors="pt").input_ids
+
         logger.trace(f"Input ids : {input_ids}")
-        generated_ids = model.generate(input_ids,
+        generated_ids = self.__model.generate(self.tokenize_function(prompt).input_ids,
                                        max_length=max_length,
                                        temperature=temperature,
                                        top_k=top_k,
                                        top_p=top_p,
                                        do_sample=True)
         logger.trace(f"ids: {generated_ids[0]}")
-        return tokenizer.decode(generated_ids[0], skip_special_tokens=True)
+        return self.__tokenizer.decode(generated_ids[0], skip_special_tokens=True)
+
