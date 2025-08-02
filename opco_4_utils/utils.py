@@ -81,30 +81,64 @@ class opco_4_utils:
 
     # Device
     def set_device(self, device: str) -> None:
-        self._device = device
+        """
+        défini le device
+        :param device:
+        :rtype: None:
+        """
+        self.__device = device
 
     def get_device(self) -> str:
-        return self._device
+        """
+        :return: La chaine codant le device utilisé
+        :rtype: str
+        """
+        return self.__device
 
     device = property(get_device, set_device)
 
     # Model
     def get_model(self) -> AutoModelForCausalLM:
-        return self._model
-
-    def set_model(self, model: AutoModelForCausalLM) -> None:
-        self._model = model
+        """
+        :return: L'instance du model utilisé par la classe
+        :rtype: AutoModelForCausalLM
+        """
+        return self.__model
 
     model = property(get_model)
 
     # Tokenizer
     def get_tokenizer(self) -> AutoTokenizer:
-        return self._tokenizer
-
-    def set_tokenizer(self, tokenizer: AutoTokenizer) -> None:
-        self._tokenizer = tokenizer
+        return self.__tokenizer
 
     tokenizer = property(get_tokenizer)
+
+    # dataset
+    def get_dataset(self) -> Dataset:
+        return self.__dataset
+
+    dataset = property(get_dataset)
+
+    # tokenized_dataset
+
+    def get_tokenized_dataset(self) -> Dataset:
+        return self.__tokenized_dataset
+
+    tokenized_dataset = property(get_tokenized_dataset)
+
+    # tokenized_dataset_train
+
+    def get_tokenized_dataset_train(self) -> Dataset:
+        return self.__tokenized_dataset_train
+
+    tokenized_dataset_train = property(get_tokenized_dataset_train)
+
+    # tokenized_dataset_test
+
+    def get_tokenized_dataset_test(self) -> Dataset:
+        return self.__tokenized_dataset_test
+
+    tokenized_dataset_test = property(get_tokenized_dataset_test)
 
     #
     # Methodes utiles
