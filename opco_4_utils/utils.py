@@ -252,28 +252,16 @@ class opco_4_utils:
 
         return self.__trainer
 
+    def save(self, model_name: str = None):
+        """
+        Sauvegarde le model sur le disque dans le dossier 'exported_models/{path}'
         :param model_name:
         :return:
         """
-        global tokenizer, initialized
-        # Création du tokenniser
-        tokenizer = AutoTokenizer.from_pretrained(model_name)
-
-        # Chargement du model
-        model = AutoModelForCausalLM.from_pretrained(model_name)
-
-        # Definition du pad_token si pas fourni
-        if pad_token is None:
-            tokenizer.pad_token = tokenizer.eos_token
-            model.config.pad_token_id = tokenizer.pad_token_id
-            print("Tokenizer par defaut")
-        else:
-            tokenizer.pad_token = pad_token
-            print("Tokenizer custom")
-
-
-        if device is not None:
-            model.to(device)
+        if model_name is None:
+            model_name = os.path.basename(self.__model_name)
+        self.__trainer.save_model(f"export_model/{str}")
+        logger.info(f"Finetuned modele sauvé dans {model_name}")
 
         initialized = True
 
