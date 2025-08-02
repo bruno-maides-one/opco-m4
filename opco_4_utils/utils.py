@@ -166,7 +166,55 @@ class opco_4_utils:
         """
         return self.__tokenizer(source[self.__column_name], truncation=True, max_length=max_length)
 
+    #
+    # Dataset
+    #
+    def load_dataset(self, dataset: dict | Dataset, test_size: float = 0.2, column_name: str|list = "sample", max_length: int = 2048):
+        """
+        Charge le dataset dataset dans la classe et le prépare pour l'entrainement à venir :
 
+        - tokenization du dataset
+        - split entre les données de train et de test
+
+        **Attention les dataset de training et de test sont conservé uniquement en séquence de token**
+
+        :param dataset: Dataset à utiliser pour le training
+        :type dataset: Dataset | dict
+        :param test_size: Taille de l'échantillon de test dans l'interval ]0, 1[
+        :type test_size: float
+        :param column_name: Nom de la colonne ou des colonnes du dataset qui sera utilisé pour le training.
+                            Si une simple chaine est donnée seul la colonne est conservée.
+                            Dans le cas ou on fournis une liste, la colonne resultante sera issue de la fusion des
+                            colonnes dans l'ordre de leur déclaration.
+        :type column_name: str | list
+        :param max_length: Longueur maximale de la séquence de token authorisée
+        :type max_length: int
+
+        :rtype: None
+        """
+        self.__column_name = column_name
+        self.__test_size = test_size
+        self.__max_length = max_length
+        logger.debug(f"__column_name : {self.__column_name}")
+        # Récuperation du dataset
+        try:
+            if isinstance(dataset, dict):
+                logger.info(f"Dataset depuis dictionnaire : {dataset.keys()}")
+                self.__dataset = Dataset.from_dict(dataset).select_columns(self.__column_name)
+            else:
+                logger.info(f"Dataset {dataset.column_names}")
+                self.__dataset = dataset.select_columns(self.__column_name)
+        except Exception as e:
+            logger.error(f"Chargement du dataset. Exception : {e}")
+            raise e
+
+        # Tokenization du dataset.
+        self.__tokenized_dataset = self.__dataset.map(self.tokenize_function, batched=True)
+        self.__tokenized_dataset = self.__tokenized_dataset.remove_columns([self.__column_name])
+        # Création du split
+        splited_datset = self.__tokenized_dataset.train_test_split(test_size=self.__test_size)
+        self.__tokenized_dataset_train = splited_datset["train"]
+        self.__tokenized_dataset_test = splited_datset["test"]
 
 
     def __old_init_model(model_name, device=None, pad_token=None):
