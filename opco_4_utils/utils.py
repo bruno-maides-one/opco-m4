@@ -239,7 +239,7 @@ class opco_4_utils:
             args=training_arguments,
             train_dataset=self.__tokenized_dataset_train,
             eval_dataset=self.__tokenized_dataset_test,
-            # data_collator=data_collator,
+            data_collator=data_collator,
         )
 
         logger.info("start training")
@@ -259,8 +259,8 @@ class opco_4_utils:
         :return:
         """
         if model_name is None:
-            model_name = os.path.basename(self.__model_name)
-        self.__trainer.save_model(f"export_model/{str}")
+            model_name = os.path.basename(self.__model_name) + "_finetuned"
+        self.__trainer.save_model(os.path.join("export_model", model_name))
         logger.info(f"Finetuned modele sauvé dans {model_name}")
 
     #
