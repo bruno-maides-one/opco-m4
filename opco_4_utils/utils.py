@@ -217,9 +217,41 @@ class opco_4_utils:
         self.__tokenized_dataset_test = splited_datset["test"]
 
 
-    def __old_init_model(model_name, device=None, pad_token=None):
+    #
+    # Training
+    #
+    def train(self, training_arguments: TrainingArguments):
         """
-        Initialise le tokenizer et le model identifié par 'model_name'
+        Execute l'entrainement du model avec le dataset préalablement chargé et les arguments d'entrainement fournis en argument.
+        :param training_arguments: Argument d'entrainement
+        :type training_arguments: TrainingArguments
+        :return: Le trainer du model
+        :rtype: Trainer
+        """
+        logger.info(f"train : data collation")
+        # mlm a false car on utilise pas la methode MLM Masked Language Modeling car le model est un CLM (GPT) et non un
+        # MLM (BERT)
+        # TODO: Pousser sur la recherche des différences entre BERT et GPT
+        data_collator = DataCollatorForLanguageModeling(tokenizer=self.__tokenizer, mlm=False)
+
+        self.__trainer = Trainer(
+            model=self.__model,
+            args=training_arguments,
+            train_dataset=self.__tokenized_dataset_train,
+            eval_dataset=self.__tokenized_dataset_test,
+            # data_collator=data_collator,
+        )
+
+        logger.info("start training")
+        try:
+            self.__trainer.train()
+            logger.success("L'entraînement a fonctionné sans erreur.")
+        except Exception as e:
+            logger.error(f"Le script a échoué. Saperlipopette !!! Erreur : {e}")
+            raise e
+
+        return self.__trainer
+
         :param model_name:
         :return:
         """
