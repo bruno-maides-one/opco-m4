@@ -32,13 +32,14 @@ modl.load_dataset(source_dataset)
 training_args = TrainingArguments(
     output_dir="./results_test_final",
     overwrite_output_dir=True,
-    num_train_epochs=1,
-    per_device_train_batch_size=2,
+    num_train_epochs=200,
+    per_device_train_batch_size=16,
     #    use_cpu=True, # On reste sur CPU pour le test
 )
 
 # --- training via la class ---
 
 trainer = modl.train(training_args)
-
+# Resultat du training 80 epochs / 2 batch size : {'train_runtime': 147.4347, 'train_samples_per_second': 43.409, 'train_steps_per_second': 10.852, 'train_loss': 0.07630807340145111, 'epoch': 80.0}
+# Resultat du training 200 epochs / 16 batch size : {'train_runtime': 219.9894, 'train_samples_per_second': 72.731, 'train_steps_per_second': 4.546, 'train_loss': 0.043269987106323245, 'epoch': 200.0}
 modl.save()
