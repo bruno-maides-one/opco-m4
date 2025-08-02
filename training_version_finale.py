@@ -1,12 +1,5 @@
-import os
-from transformers import (
-    AutoTokenizer,
-    AutoModelForCausalLM,
-    Trainer,
-    TrainingArguments,
-    DataCollatorForLanguageModeling,
-)
-from datasets import Dataset, load_dataset
+from transformers import TrainingArguments
+from datasets import Dataset
 from opco_4_utils import opco_4_utils
 from data.dataset_training import dataset_training
 
