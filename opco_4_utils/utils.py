@@ -153,6 +153,20 @@ class opco_4_utils:
         self.__device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         return self.__device
 
+    def tokenize_function(self, source: str | list[str], max_length: int = 2048):
+        """
+        Tokenise la chaine `source`
+        :param source: Chaine à tokenizer
+        :type source: str
+        :param max_length: Longueur maximal de la séquence de tokens
+        :type max_length: int
+
+        :return: La séquence de tokens
+        :rtype: list
+        """
+        return self.__tokenizer(source[self.__column_name], truncation=True, max_length=max_length)
+
+
 
 
     def __old_init_model(model_name, device=None, pad_token=None):
