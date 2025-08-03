@@ -3,3 +3,10 @@ datasets
 torch
 accelerate
 loguru
+scikit-learn
+pandas
+matplotlib
+seaborn
+tensorflow
+missingno
+lightgbm
