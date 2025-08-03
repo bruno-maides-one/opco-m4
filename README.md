@@ -53,7 +53,7 @@ Fichiers notables :
     * Finir la methode do_predict qui n'a pas été terminée
     * Revoir le prototype de certaines methode qui devraient être plus dans une approche objet
     * Apprendre a gérer les parametres `*args` et `**kwargs`.
-* ~~[export_model](export_model) : le dossier contenant le model fine tunné.~~ EDIT: Repertoire absent du repository à 
+* ~~[export_model](export_model) : le dossier contenant le model fine tunné.~~ EDIT: Repertoire absent du repository car 
   la taiile des fichiers autorisé par github, ils sont générable en lançant le script [brief-e-training_version_finale.py](brief-e-training_version_finale.py)
 * [test-gpu.ipynb](test-gpu.ipynb) : Petit notebook pour détecter le GPU
 * [test-extraction-doctring.ipynb](test-extraction-doctring.ipynb) : Exploration rapide pour voir comment extraire le
